@@ -1,0 +1,11 @@
+//Add your Marketo Form Embed Script as normal here!
+
+<script>
+MktoForms2.whenReady(function(form){
+    tyURL= "https://www.example.com/ty-page" //Replace with the URL of your TY Page
+    form.onSuccess(function(vals,tyURL){
+        document.location.href = tyURL;
+        return false;
+    });
+});
+</script>

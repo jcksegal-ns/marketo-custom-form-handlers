@@ -1,0 +1,20 @@
+//Add your Marketo Form Embed Script as normal here!
+
+<script>
+MktoForms2.whenReady(function(form){
+  form.onSuccess(function(vals){
+    console.log("Form Submitted")
+    form.getFormElem().hide()
+    console.log("Form Hidden")
+    document.getElementById('confirmform').style.visibility = 'visible'
+    console.log("TY Message Shown")
+    //return false to prevent the submission handler from taking the lead to the follow up url.
+    return false
+  })
+})
+</script>
+
+<div id="confirmform" style="visibility:hidden;">
+  //Replace this with your desired text, format using HTML
+  <p>Thank you!</p>
+</div>
