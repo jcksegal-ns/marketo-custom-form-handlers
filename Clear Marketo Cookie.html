@@ -1,0 +1,13 @@
+//Either add this code to pages that have Marketo forms where you wish to clear the cookie pre-submission
+//Or add it as a Tag in Google Tag Manager and set it to trigger on pages you desire.
+
+<script>
+MktoForms2.whenReady(function(form){
+//add the tracking field to be submitted
+        form.addHiddenFields({"_mkt_trk":""})
+        //clear the value during the onSubmit event to prevent tracking association
+        form.onSubmit(function(form){
+                form.vals({"_mkt_trk":""})
+        })
+})
+</script>

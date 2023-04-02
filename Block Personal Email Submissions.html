@@ -1,0 +1,64 @@
+//Note: This is not a guaranteed method of blocking Personal Email Addresses; JS blockers will break it.
+
+//There are two options for how you add this functionality to your site:
+//1. Add it to every page where you want to block personal emails
+//2. Add it in Google Tag Manager and set it to run when a Marketo form is detected on a page.
+
+<script>
+
+//List of personal email domains that block submission
+var domains = [
+    'gmail.com','hotmail.com','live.com','outlook.com','yahoo.com','aol.com','icloud.com','email.com',
+    'me.com','sbcglobal.com','test.com'
+    ]
+
+//List of all Marketo form IDs where blocking is desired
+var formIDs = [
+    ]
+
+//Validation text that shows after a failed submission with
+//a personal email address
+var error = 'A Business email is required for optimal demo experience.'
+
+//No changes below this point
+var isBlockedEmail = function(email,domains) {
+	var emailDomain = email.substr( email.lastIndexOf('@')+1 , email.length ).toLowerCase()
+	return domains.some( function(d) { return d.toLowerCase() === emailDomain } )
+}
+
+function formcode(){ 
+    MktoForms2.whenReady(function(form){
+        // code inside this function will execute when `MktoForms2` has
+        // determined it's fully loaded.
+
+        var formID=form.getFormElem()[0].id
+
+        if (formIDs.includes(formID)){
+            console.log('Form for Email Blocking found.')
+        }
+        
+        $ = MktoForms2.$
+            form.onValidate( function(isNativeValid) {
+                if(!isNativeValid) return
+                var email = form.vals().Email
+
+                if (email) {
+                    if (isBlockedEmail(email,domains) && formIDs.includes(formID)){
+                        form.submitable(false)
+                        form.showErrorMessage( error , $('#Email'))
+                        
+                        //Optional: Pushes an Event to Google Tag Manager when a form submission is blocked.
+                        dataLayer.push({
+                            'event': 'mkto.form.submit_blocked',
+                        })
+                    }
+                    else {
+                        form.submitable(true)
+                    }
+                }
+            })
+    })
+}
+
+formcode()
+</script>
